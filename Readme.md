@@ -1,7 +1,13 @@
 #Bird Analysis Documentation
+
 @authors Evan, Jason, Yixuan
-##Data Read This is to feed the csv from the observation data pool to our data analysis engine.
+
+##Data Read
+This is to feed the csv from the observation data pool to our data analysis engine.
+
 code
+
+```
 # The usual preamble
 
 import matplotlib.pyplot as plt
@@ -17,11 +23,20 @@ pd.set_option('display.width', 1000)
 
 #read data
 df = pd.read_csv("/Users/jason/Downloads/data.csv")
-List Possible Misspellings
+```
+
+
+## List Possible Misspellings
 We noted that the observers really just hate this assignment
+
 code
+
+```
 df.loc[(df['Bird Species'].str.upper().str.contains('JAVAN'))]['Bird Species'].value_counts()
+```
 output
+
+```
 Javan Myna              473
 Javan Myna               81
 Javan Mynah               2
@@ -30,11 +45,20 @@ Javan Myna (x2)           1
 Javan Myna x4             1
 javan Myna                1
 Suspected Javan Myna      1
-List Unknown Sightings
+```
+
+## List Unknown Sightings
 We noted several observers were unable to name some bird sightings
+
 code
+
+```python
 df.loc[(df['Bird Species'].str.upper().str.contains('\?|SUSPECTED|\`|^-$|^BIRD'))]['Bird Species'].value_counts()
+```
+
 output
+
+```
 Large grey/black bird, suspected pigeon    3
 Bird that sounds like monkey               2
 Bird of prey(?)                            2
@@ -47,10 +71,19 @@ swiflet (?)                                1
 `                                          1
 Olive-backed Sunbird (?)                   1
 Suspected Javan Myna                       1
-List Possible Distances
-We noted non-standard distance recordings code
+```
+
+## List Possible Distances
+We noted non-standard distance recordings
+code
+
+```
 df['Distance Bin'].value_counts()
+```
+
 output
+
+``` 
 2               550
 1               469
 Flyby           253
@@ -66,11 +99,20 @@ heard             4
 flyby(3)          2
 -                 2
 In flight         1
-Possible Habitat Types
+```
+
+# Possible Habitat Types
 We noted non-standard habitat type recordings
+
 code
+
+```
 df['Habitat Type'].value_counts()
+```
+
 output
+
+```
 Urban                                1276
 Tree                                   98
 Forest                                 38
@@ -127,8 +169,14 @@ Building opposite bus stop              1
 Urban (Top of lamppost)                 1
 NIL (heard only)                        1
 Top of Angsana tree                     1
-##Data Cleanup Data does not conform to the standards requested in the field guide. This section will normalise most of the data so that it can be used for further analysis
+```
+
+##Data Cleanup
+Data does not conform to the standards requested in the field guide. This section will normalise most of the data so that it can be used for further analysis
+
 code
+
+```python
 # Some guys did not fill in any data... sigh
 df = df.fillna("")
 
@@ -180,22 +228,22 @@ df['Habitat Type'] = ["urban" if "pavement" in x.lower() else x for x in df['Hab
 df['NBirdSpecies'] = ["SWIFTLET" if "SWIF" in x else x for x in df['NBirdSpecies']]
 
 for idx, row in df.iterrows():
-    if 'JAVAN MYNAH' in row[11]:
-        row[11] = 'JAVAN MYNA'
-    elif 'SWIF' in row[11]:
-        row[11] = 'SWIFTLET'
-    elif 'OLVE-BACKED SUNBIRD' in row[11]:
-        row[11] = 'OLIVE-BACKED SUNBIRD'
-    elif 'PINK NECK GREEN PIGEON' in row[11]:
-        row[11] = 'PINK-NECKED GREEN PIGEON'
-    elif 'JARVAN MYNA' in row[11]:
-        row[11] = 'JAVAN MYNA'
-    elif 'OLIVE-WINGED BULBOL' in row[11]:
-        row[11] = 'OLIVE-BACKED SUNBIRD'
-    elif 'ROCKED PIGEON' in row[11]:
-        row[11] = 'ROCK PIGEON'
-    elif 'PINK NECK GREEN PEGION' in row[11]:
-         row[11] = 'PINK-NECKED GREEN PIGEON'
+	if 'JAVAN MYNAH' in row[11]:
+	    row[11] = 'JAVAN MYNA'
+	elif 'SWIF' in row[11]:
+	    row[11] = 'SWIFTLET'
+	elif 'OLVE-BACKED SUNBIRD' in row[11]:
+	    row[11] = 'OLIVE-BACKED SUNBIRD'
+	elif 'PINK NECK GREEN PIGEON' in row[11]:
+	    row[11] = 'PINK-NECKED GREEN PIGEON'
+	elif 'JARVAN MYNA' in row[11]:
+	    row[11] = 'JAVAN MYNA'
+	elif 'OLIVE-WINGED BULBOL' in row[11]:
+	    row[11] = 'OLIVE-BACKED SUNBIRD'
+	elif 'ROCKED PIGEON' in row[11]:
+	    row[11] = 'ROCK PIGEON'
+	elif 'PINK NECK GREEN PEGION' in row[11]:
+		 row[11] = 'PINK-NECKED GREEN PIGEON'
 
         
 
@@ -218,19 +266,37 @@ def fix_time(y):
 
 df['Time'] = df['Time'].apply(fix_time)
 df['Time'] = pd.to_datetime(df['Time'], errors='coerce')
-Get number of unique locations
+```
+
+## Get number of unique locations
 This is to check if the locations have reached 200. Please look at the next section for more details
+
 code
+
+```python
 df['Location'] = df['Location'].str.lower()
 df.drop_duplicates('Location')['Group Name'].value_counts()
 
 print('Number of unique locations: {}'.format(
     len(set(df['Location'])))) 
+
+```
+
 output
+
+```
 Number of unique locations: 194
-Get number of group locations
+```
+
+
+
+## Get number of group locations
+
 This is to check if every observer group has recorded down their observations. As noted, several groups did not record down all locations as some locations do not have any bird sightings
+
 Code
+
+```
 
 asian_koel = df[(df['Group Name'] == 'Asian Koel')]
 ashy_minivet = df[(df['Group Name'] == 'Ashy Minivet')]
@@ -251,7 +317,11 @@ print('Number of rows: {}'.format(len(df)))
 for group_num, group in enumerate(groups):
     print('Number of rows by group {}: {}'.format(group_num+1, len(group)))
     print('                locations: {}'.format(len(set(group['Location']))))
+```
+
 output
+
+```
 
 Number of rows: 1788
 Number of rows by group 1: 125
@@ -275,18 +345,37 @@ Number of rows by group 9: 150
 Number of rows by group 10: 132
                 locations: 19
                 
-##Drop all other birds except the 5 species
+```
+
+
+##Drop all other birds except the 5 speciecs
+
+
+
 Observers have recorded down other birds. Due to the premise of this study, we will only take the 5 specified bird species.
+
+```
 df = df.loc[(df['NBirdSpecies'] == 'JAVAN MYNA') |
               (df['NBirdSpecies'] == 'YELLOW-VENTED BULBUL') |
               (df['NBirdSpecies'] == 'OLIVE-BACKED SUNBIRD') |
               (df['NBirdSpecies'] == 'BLACK-NAPED ORIOLE') |
               (df['NBirdSpecies'] == 'ROCK PIGEON')]
+```
+
 ##Drop all flyby
-Observers have recorded down flybys, which is not needed for in population estimates.
-df = df.loc[(df['Distance Bin'].str.lower().str.contains("^1$|^2$|^3$|^4$"))]
+
+Observers have recorded down flyblys, which is not needed for in population estimates.
+
+```
+df = df.loc[(df['Distance Bin'].str.lower().str.contains("^1$|^2$|^3$|^4$|heard"))]
+```
+
+
 ##Count by Habitat
+
 Breakdown of bird observations by the 4 specified habitats. We have noted that several observers have creative writing so we have normalised their habitat recordings.
+
+```
 df[df['Habitat Type'].fillna("").str.lower().str.contains('forest')]['NBirdSpecies'].value_counts()
 
 YELLOW-VENTED BULBUL    53
@@ -316,48 +405,89 @@ JAVAN MYNA              10
 YELLOW-VENTED BULBUL     4
 OLIVE-BACKED SUNBIRD     5
 BLACK-NAPED ORIOLE       0
-Overall Population Count
+
+```
+
+
+## Overall Population Count
+
 Code
+
+```
 ptCount = df['NBirdSpecies']\
            .value_counts() 
 
 print(ptCount)
 print(df['NBirdSpecies'].count())
+```
+
+
 Output
+
+```
 JAVAN MYNA              461
 YELLOW-VENTED BULBUL    313
 OLIVE-BACKED SUNBIRD    228
 BLACK-NAPED ORIOLE       96
 ROCK PIGEON              93
 1191
-Overall Population Density
+```
+
+
+## Overall Population Density
+
 Code
+
+```
 numOfPt = 200
 popCount = ptCount / (0.01 * numOfPt * np.pi)
 print(popCount)
 print(1191 / (0.01 * numOfPt * np.pi))
+```
+
 Output
+
+```
 JAVAN MYNA              73.370429
 YELLOW-VENTED BULBUL    49.815497
 OLIVE-BACKED SUNBIRD    36.287327
 BLACK-NAPED ORIOLE      15.278875
 ROCK PIGEON             14.801410
 189.55353722244735
-Overall Population Density Graph
+```
+
+## Overall Population Density Graph
+
 Code
+
+```
 pol = popCount.plot(kind='barh')
 pol.grid()
 plt.tight_layout()
 plt.show()
-Locations observed over Time Graph
-pol = df.drop_duplicates(['Location']).set_index('Time')[['Location']].groupby(pd.TimeGrouper(freq='10Min')).count().plot(kind=’barh’)
+```
+
+
+## Locations observed over Time Graph
+
+```
+pol = df.drop_duplicates(['Location']).set_index('Time')[['Location']].groupby(pd.TimeGrouper(freq='10Min')).count().plot()
 pol.grid()
 plt.tight_layout()
 plt.show()
-Bird Sightings accounted for observers over Time Graph
+```
+
+## Bird Sightings accounted for observers over Time Graph
+
 Observers over time
+
+```
 t = df.drop_duplicates(['Location']).set_index('Time')[['Location']].groupby(pd.TimeGrouper(freq='10Min')).count()
+
+```
 Bird Sightings divided by observers over time
+
+```
 a = df.loc[(df['NBirdSpecies']=='JAVAN MYNA')].set_index('Time')[['NBirdSpecies']].groupby(pd.TimeGrouper(freq='10Min')).count()
 
 an = a.reindex(t.index).div(t.values).replace([np.inf, -np.inf], np.nan).fillna(0)
@@ -377,7 +507,12 @@ dn = d.reindex(t.index).div(t.values).replace([np.inf, -np.inf], np.nan).fillna(
 e = df.loc[(df['NBirdSpecies']=='ROCK PIGEON')].set_index('Time')[['NBirdSpecies']].groupby(pd.TimeGrouper(freq='10Min')).count()
 
 en = e.reindex(t.index).div(t.values).replace([np.inf, -np.inf], np.nan).fillna(0)
-Graph
+
+```
+
+Graph 
+
+```
 pol = an.plot()
 bn.plot(ax=pol)
 cn.plot(ax=pol)
@@ -388,3 +523,7 @@ pol.legend(["Number of Javan Myna","Number of Yellow-vented Bulbul","Number of O
 pol.grid()
 plt.tight_layout()
 plt.show()
+```
+
+
+
