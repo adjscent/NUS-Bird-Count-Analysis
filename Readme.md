@@ -348,7 +348,7 @@ Number of rows by group 10: 132
 ```
 
 
-##Drop all other birds except the 5 speciecs
+## Drop all other birds except the 5 speciecs
 
 
 
@@ -362,7 +362,7 @@ df = df.loc[(df['NBirdSpecies'] == 'JAVAN MYNA') |
               (df['NBirdSpecies'] == 'ROCK PIGEON')]
 ```
 
-##Drop all flyby
+## Drop all flyby
 
 Observers have recorded down flyblys, which is not needed for in population estimates.
 
@@ -371,7 +371,7 @@ df = df.loc[(df['Distance Bin'].str.lower().str.contains("^1$|^2$|^3$|^4$|heard"
 ```
 
 
-##Count by Habitat
+## Count by Habitat
 
 Breakdown of bird observations by the 4 specified habitats. We have noted that several observers have creative writing so we have normalised their habitat recordings.
 
