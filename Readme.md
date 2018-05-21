@@ -1,13 +1,13 @@
-#Bird Analysis Documentation
+# Bird Analysis Documentation
 
 @authors Evan, Jason, Yixuan
 
-##Data Read
+## Data Read
 This is to feed the csv from the observation data pool to our data analysis engine.
 
 code
 
-```
+```python
 # The usual preamble
 
 import matplotlib.pyplot as plt
